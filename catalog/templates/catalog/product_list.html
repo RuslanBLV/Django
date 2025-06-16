@@ -1,0 +1,15 @@
+{% extends 'catalog/base.html'%}
+
+{% block title %}Список продуктов{% endblock %}
+
+{% block content %}
+{% include 'catalog/header.html' %}
+<h2>Список продуктов</h2>
+<ul class="list-group">
+    {% for prod in product %}
+    <li class="list-group-item">
+        {{ prod.name }}, цена: {{ prod.price }}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
