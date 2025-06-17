@@ -6,7 +6,7 @@
 {% include 'catalog/header.html' %}
 <h2>Детали продукта</h2>
 <p>Название: {{ product.name }}</p>
-<p>Описание: {{ product.description}}</p>
+<p>Описание: {{ product.description | truncatechars:100 }}</p>
 <p><img src="{{ product.image.url }}" alt="{{ product.name }}" width="300"></p>
 <p>Цена: {{ product.price}}</p>
 <p>Дата произхождения {{ product.created_at|date:"d M Y"}}</p>
