@@ -1,6 +1,16 @@
 from django.db import models
 
 
+# class MyModel(models.Model):
+#     name = models.CharField(max_length=300)
+#     description = models.TextField()
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#
+#     def __str__(self):
+#         return self.name
+
+
 class Category(models.Model):
     name = models.CharField(max_length=200, verbose_name='Категория')
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
@@ -19,10 +29,12 @@ class Product(models.Model):
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
     image = models.ImageField(verbose_name='Изображение', upload_to='media/photos/')
     category = models.CharField(max_length=150, verbose_name='Категория')
+    is_published = models.BooleanField(default=False, verbose_name='Опубликовано')
     price = models.IntegerField(verbose_name='Цена')
-    created_at = models.DateField(verbose_name='Дата создания', auto_now=True)
-    updated_at = models.DateField(verbose_name='Дата последнего изменения')
+    created_at = models.DateField(verbose_name='Дата создания', auto_now_add=True)
+    updated_at = models.DateField(verbose_name='Дата последнего изменения', auto_now=True)
     category_product = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category')
+    views_counter = models.PositiveIntegerField(verbose_name="Счетчик просмотров", default=0)
 
     def __str__(self):
         return self.name

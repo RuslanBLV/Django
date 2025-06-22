@@ -6,9 +6,10 @@
 {% include 'catalog/header.html' %}
 <h2>Список продуктов</h2>
 <ul class="list-group">
-    {% for prod in product %}
+    {% for prod in products %}
     <li class="list-group-item">
-        {{ prod.name }}, цена: {{ prod.price }}
+        <a href="{% url 'catalog:product_detail' prod.pk %}">{{ prod.name }}</a>
+        цена: {{ prod.price }}
     </li>
     {% endfor %}
 </ul>
