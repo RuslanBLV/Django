@@ -10,7 +10,7 @@ from django.views import View
 
 class ProductCreateView(CreateView):
     model = Product
-    fields = ['name', 'description', 'image', 'price', 'category_product', ]
+    fields = ['name', 'description', 'image', 'price', 'category_product', 'views_counter',]
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:product_list')
 
