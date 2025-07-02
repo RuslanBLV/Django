@@ -1,5 +1,9 @@
 from django import forms
 from .models import Product
+from django.core.exceptions import ValidationError
+
+
+error_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
 
 class ProductForm(forms.ModelForm):
@@ -32,7 +36,7 @@ class ProductForm(forms.ModelForm):
         description = self.cleaned_data.get('description')
         category = self.cleaned_data.get('category')
 
-        for word in ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно','обман', 'полиция', 'радар']:
+        for word in error_words:
             word_lower = word.lower()
             if name.lower() == word_lower:
                 self.add_error('name', 'Некорректное слово')
@@ -45,6 +49,6 @@ class ProductForm(forms.ModelForm):
         price = self.cleaned_data.get('price')
 
         if price < 0:
-            self.add_error('price', 'Цена не может быть отрицательной')
+            raise ValidationError('Цена не может быть отрицательной')
         return price
 
