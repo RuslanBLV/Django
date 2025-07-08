@@ -7,9 +7,10 @@ from django.urls import reverse
 from catalog.models import Product
 from django.views import View
 from catalog.forms import ProductForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     """Представление для создания нового продукта"""
     model = Product
     form_class = ProductForm
@@ -42,7 +43,7 @@ class ProductDetailView(DetailView):
         return self.object
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     """Представление для редактирования продукта"""
     model = Product
     form_class = ProductForm

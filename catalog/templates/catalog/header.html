@@ -1,7 +1,8 @@
 <header>
     <h1>Сайт продуктов</h1>
-    <nav>
-        <a href="{% url 'catalog:product_list' %}">Список продуктов</a>
-        <a href="{% url 'catalog:product_create' %}">Добавить продукт</a>
-    </nav>
+    {% if user.is_authenticated %}
+        <p>Добро пожаловать, {{user.username}}!</p>
+    {% else %}
+        <p>Добро пожаловать на сайт!</p>
+    {% endif %}
 </header>
