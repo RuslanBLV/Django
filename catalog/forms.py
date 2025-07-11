@@ -1,6 +1,7 @@
 from django import forms
 from .models import Product
 from django.core.exceptions import ValidationError
+from users.models import CustomUser
 
 
 error_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
@@ -9,7 +10,7 @@ error_words = ['казино', 'криптовалюта', 'крипта', 'би
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'image', 'category', 'category_product', 'is_published',]
+        fields = ['name', 'description', 'price', 'image', 'category', 'category_product',]
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
@@ -30,6 +31,7 @@ class ProductForm(forms.ModelForm):
             'class': 'form-control',
             'placeholder': 'Впишите категорию продукта'
         })
+
 
     def clean(self):
         name = self.cleaned_data.get('name')

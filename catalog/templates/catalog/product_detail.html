@@ -1,4 +1,4 @@
-{% extends 'catalog/base.html'%}
+{% extends 'catalog/base.html' %}
 
 {% block title %}Список продуктов{% endblock %}
 
@@ -8,10 +8,26 @@
 <p>Название: {{ product.name }}</p>
 <p>Описание: {{ product.description | truncatechars:100 }}</p>
 <p><img src="{{ product.image.url }}" alt="{{ product.name }}" width="300"></p>
-<p>Цена: {{ product.price}}</p>
-<p>Дата произхождения {{ product.created_at|date:"d M Y"}}</p>
-<a href="{% url 'catalog:product_update' product.pk%}" class="btn btn-secondary">Редактировать</a>
-<a href="{% url 'catalog:product_delete' product.pk%}" class="btn btn-danger">Удалить</a>
-<a href="{% url 'catalog:product_list'%}" class="btn btn-primary">Вернуться к списку</a>
+<p>Цена: {{ product.price }}</p>
+<p>Дата произхождения {{ product.created_at|date:"d M Y" }}</p>
+<p>Владелец: {{ product.owner }}</p>
+
+{% if user.is_authenticated and product.owner == user %}
+    <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-secondary">Редактировать</a>
+{% endif %}
+
+{% if user.is_authenticated and product.owner == user or is_moderator %}
+    <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">Удалить</a>
+{% endif %}
+
+<a href="{% url 'catalog:product_list' %}" class="btn btn-primary">Вернуться к списку</a>
+
+{% if perms.catalog.can_unpublish_product %}
+    <form action="{% url 'catalog:product_unpublish' product.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Опубликовать</button>
+    </form>
+{% endif %}
 {% endblock %}
+
 
