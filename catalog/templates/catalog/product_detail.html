@@ -10,6 +10,7 @@
 <p><img src="{{ product.image.url }}" alt="{{ product.name }}" width="300"></p>
 <p>Цена: {{ product.price }}</p>
 <p>Дата произхождения {{ product.created_at|date:"d M Y" }}</p>
+<p>Категория: {{ product.category_product }}</p>
 <p>Владелец: {{ product.owner }}</p>
 
 {% if user.is_authenticated and product.owner == user %}

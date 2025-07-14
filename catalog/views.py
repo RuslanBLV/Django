@@ -9,6 +9,30 @@ from django.views import View
 from catalog.forms import ProductForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponseForbidden
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.core.cache import cache
+from .services import get_products_by_category
+from .models import Category
+
+
+class ProductsByCategoryView(LoginRequiredMixin, ListView):
+    model = Product
+    template_name = 'catalog/products_by_category.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        self.category = self.request.GET.get('category', None)
+        queryset = Product.objects.filter(owner=self.request.user)
+        if self.category:
+            queryset = queryset.filter(category_product__name=self.category)
+        return queryset
+
+    def get_context_data(self, *kwargs):
+        context = super().get_context_data(*kwargs)
+        context['category'] = getattr(self, 'category', None)
+        context['categories'] = Category.objects.all()
+        return context
 
 
 class UnPublishProductView(LoginRequiredMixin, View):
@@ -45,8 +69,19 @@ class ProductListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     permission_required = 'catalog.view_product'
 
     def get_queryset(self):
-        """фильтрация только опубликованных продуктов."""
-        return Product.objects.filter(unpublish=True)
+        queryset = Product.objects.filter(unpublish=True)
+        category_name = self.request.GET.get('category')
+
+        if category_name:
+            queryset = queryset.filter(category_product__name=category_name)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        context['selected_category'] = self.request.GET.get('category', '')
+        return context
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -113,6 +148,7 @@ def home_html(request):
 
 class ContactsView(View):
     """Страница контактов"""
+
     def get(self, request):
         """Обрабатывает GET-запрос, отображая форму контактов."""
         return render(request, 'catalog/contacts.html')

@@ -22,7 +22,6 @@ class Product(models.Model):
     name = models.CharField(max_length=150, verbose_name='Продукт')
     description = models.TextField(null=True, blank=True, verbose_name='Описание')
     image = models.ImageField(verbose_name='Изображение', upload_to='media/photos/')
-    category = models.CharField(max_length=150, verbose_name='Категория')
     unpublish = models.BooleanField(default=False, verbose_name='Опубликовано', null=True, blank=True)
     price = models.IntegerField(verbose_name='Цена')
     created_at = models.DateField(verbose_name='Дата создания', auto_now_add=True)
@@ -43,3 +42,5 @@ class Product(models.Model):
         permissions = [
             ('can_unpublish_product', 'Can unpublish product'),
         ]
+
+
