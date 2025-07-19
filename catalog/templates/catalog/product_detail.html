@@ -1,0 +1,34 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Список продуктов{% endblock %}
+
+{% block content %}
+{% include 'catalog/header.html' %}
+<h2>Детали продукта</h2>
+<p>Название: {{ product.name }}</p>
+<p>Описание: {{ product.description | truncatechars:100 }}</p>
+<p><img src="{{ product.image.url }}" alt="{{ product.name }}" width="300"></p>
+<p>Цена: {{ product.price }}</p>
+<p>Дата произхождения {{ product.created_at|date:"d M Y" }}</p>
+<p>Категория: {{ product.category_product }}</p>
+<p>Владелец: {{ product.owner }}</p>
+
+{% if user.is_authenticated and product.owner == user %}
+    <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-secondary">Редактировать</a>
+{% endif %}
+
+{% if user.is_authenticated and product.owner == user or is_moderator %}
+    <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">Удалить</a>
+{% endif %}
+
+<a href="{% url 'catalog:product_list' %}" class="btn btn-primary">Вернуться к списку</a>
+
+{% if perms.catalog.can_unpublish_product %}
+    <form action="{% url 'catalog:product_unpublish' product.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Опубликовать</button>
+    </form>
+{% endif %}
+{% endblock %}
+
+

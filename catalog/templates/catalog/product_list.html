@@ -1,0 +1,35 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Список продуктов{% endblock %}
+
+{% block content %}
+{% include 'catalog/header.html' %}
+
+<h2>Список продуктов</h2>
+
+<form method="get" action=".">
+    <label for="category-select">Выберите категорию:</label>
+    <select name="category" id="category-select" onchange="this.form.submit()">
+        <option value="">Все категории</option>
+        {% for cat in categories %}
+            <option value="{{ cat.name }}" {% if selected_category == cat.name %}selected{% endif %}>
+                {{ cat.name }}
+            </option>
+        {% endfor %}
+    </select>
+    <noscript>
+        <button type="submit">Фильтровать</button>
+    </noscript>
+</form>
+
+<ul class="list-group mt-3">
+    {% for prod in products %}
+    <li class="list-group-item">
+        <a href="{% url 'catalog:product_detail' prod.pk %}">{{ prod.name }}</a> — цена: {{ prod.price }}
+    </li>
+    {% empty %}
+    <li class="list-group-item">Нет продуктов в выбранной категории</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
