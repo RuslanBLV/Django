@@ -14,6 +14,7 @@ from django.utils.decorators import method_decorator
 from django.core.cache import cache
 from .services import get_products_by_category
 from .models import Category
+from .services import get_product_from_cache, get_products_by_category
 
 
 class ProductsByCategoryView(LoginRequiredMixin, ListView):
@@ -23,9 +24,10 @@ class ProductsByCategoryView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         self.category = self.request.GET.get('category', None)
-        queryset = Product.objects.filter(owner=self.request.user)
         if self.category:
-            queryset = queryset.filter(category_product__name=self.category)
+            queryset = get_products_by_category(self.category)
+        else:
+            queryset = get_product_from_cache()
         return queryset
 
     def get_context_data(self, *kwargs):
@@ -69,13 +71,10 @@ class ProductListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     permission_required = 'catalog.view_product'
 
     def get_queryset(self):
-        queryset = Product.objects.filter(unpublish=True)
         category_name = self.request.GET.get('category')
-
         if category_name:
-            queryset = queryset.filter(category_product__name=category_name)
-
-        return queryset
+            return get_products_by_category(category_name)
+        return get_product_from_cache()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
